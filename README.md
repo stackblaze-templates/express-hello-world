@@ -1,15 +1,35 @@
-# README
+# Express.js
 
-This is the [Express](https://expressjs.com) [Hello world](https://expressjs.com/en/starter/hello-world.html) example on [Stackblaze](https://stackblaze.com).
+[![Maintained by StackBlaze](https://img.shields.io/badge/maintained%20by-StackBlaze-blue)](https://stackblaze.com)
+[![Weekly Updates](https://img.shields.io/badge/updates-weekly-green)](https://github.com/stackblaze-templates/express-hello-world/actions)
+[![License](https://img.shields.io/github/license/stackblaze-templates/express-hello-world)](LICENSE)
 
-The app in this repo is deployed at [https://express.onstackblaze.com](https://express.onstackblaze.com).
+A fast, minimalist web framework for Node.js. Express provides a thin layer of fundamental web application features without obscuring Node.js features.
 
-## Deployment
+> **Credits**: Built on [Express.js](https://expressjs.com) by [OpenJS Foundation](https://openjsf.org). All trademarks belong to their respective owners.
 
-See https://stackblaze.com/docs/deploy-node-express-app or follow the steps below:
+## Deploy on StackBlaze
 
-Create a new web service with the following values:
-  * Build Command: `yarn`
-  * Start Command: `node app.js`
+[![Deploy on StackBlaze](https://img.shields.io/badge/Deploy%20on-StackBlaze-orange)](https://stackblaze.com)
 
-That's it! Your web service will be live on your Stackblaze URL as soon as the build finishes.
+This template includes a `stackblaze.yaml` for one-click deployment on [StackBlaze](https://stackblaze.com).
+
+## Local Development
+
+```bash
+docker compose up
+```
+
+See the project files for configuration details.
+
+---
+
+### Maintained by [StackBlaze](https://stackblaze.com)
+
+This template is actively maintained by StackBlaze. We perform **weekly automated checks** to ensure:
+
+- **Up-to-date dependencies** — frameworks, libraries, and base images are kept current
+- **Security scanning** — continuous monitoring for known vulnerabilities and CVEs
+- **Best practices** — configurations follow current recommendations from upstream projects
+
+Found an issue? [Open a ticket](https://github.com/stackblaze-templates/express-hello-world/issues).
