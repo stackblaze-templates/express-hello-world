@@ -1,4 +1,4 @@
-# Express.js [![Maintained by StackBlaze](https://img.shields.io/badge/maintained%20by-StackBlaze-blue)](https://stackblaze.com) [![Weekly Updates](https://img.shields.io/badge/updates-weekly-green)](https://github.com/stackblaze-templates/express-hello-world/actions) [![License](https://img.shields.io/github/license/stackblaze-templates/express-hello-world)](LICENSE) [![Deploy on StackBlaze](https://img.shields.io/badge/Deploy%20on-StackBlaze-orange)](https://stackblaze.com)
+# Express.js [![Version](https://img.shields.io/badge/version-4.21-000000)](https://github.com/stackblaze-templates/express-hello-world) [![Maintained by StackBlaze](https://img.shields.io/badge/maintained%20by-StackBlaze-blue)](https://stackblaze.com) [![Weekly Updates](https://img.shields.io/badge/updates-weekly-green)](https://github.com/stackblaze-templates/express-hello-world/actions) [![License](https://img.shields.io/github/license/stackblaze-templates/express-hello-world)](LICENSE) [![Deploy on StackBlaze](https://img.shields.io/badge/Deploy%20on-StackBlaze-orange)](https://stackblaze.com)
 
 <p align="center"><img src="logo.png" alt="express-hello-world" width="120"></p>
 
