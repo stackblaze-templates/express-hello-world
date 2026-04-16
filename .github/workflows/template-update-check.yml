@@ -1,4 +1,4 @@
-name: Weekly Template Update Check
+name: Weekly Security Audit
 
 on:
   schedule:
@@ -10,38 +10,89 @@ permissions:
   contents: read
 
 jobs:
-  create-update-issue:
+  create-audit-issue:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Ensure security-audit label exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh label create "security-audit" \
+            --color "d73a4a" \
+            --description "Weekly automated security audit task" \
+            --force
 
       - name: Check for existing open issue
         id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          existing=$(gh issue list --label "template-update" --state open --json number --jq 'length')
+          existing=$(gh issue list --label "security-audit" --state open --json number --jq 'length')
           echo "exists=$existing" >> "$GITHUB_OUTPUT"
 
-      - name: Create update check issue
+      - name: Create security audit issue
         if: steps.check.outputs.exists == '0'
         env:
           GH_TOKEN: ${{ secrets.COPILOT_PAT }}
         run: |
           gh issue create \
-            --title "Weekly template update check" \
-            --label "template-update" \
+            --title "Weekly security audit" \
+            --label "security-audit" \
             --assignee "copilot-swe-agent" \
             --body "$(cat <<'EOF'
-          Check if this template needs updates:
+          Perform a security audit of this template. **Dependency version bumps are handled by Dependabot** — focus exclusively on security posture and hardening that Dependabot does not cover.
 
-          1. **Framework/library versions**: Are the core dependencies on their latest stable versions? If a major version upgrade is available, update the template to use it.
-          2. **Language runtime**: Is the language runtime version (in Dockerfile, config files, CI) current and supported?
-          3. **Deprecated APIs or patterns**: Are there any deprecated APIs, functions, or patterns that should be replaced with modern equivalents?
-          4. **Configuration best practices**: Are config files (linters, formatters, tsconfig, etc.) following current best practices?
-          5. **Dockerfile**: Is the base image up to date? Are there any security or efficiency improvements?
-          6. **README**: Does the README accurately reflect the current setup?
+          ## Audit checklist
 
-          If updates are needed, open a PR with the changes. If everything is up to date, close this issue with a comment confirming no changes are needed.
+          1. **Dockerfile hardening**
+             - Runs as a non-root user (`USER` directive, not root)
+             - Base image is pinned to a specific digest (`@sha256:...`) or at least a minor version (not `latest`)
+             - Minimal base image (e.g. `-slim`, `-alpine`, `distroless`) where practical
+             - Multi-stage build drops build tooling from the final image
+             - No unnecessary packages installed
+             - `HEALTHCHECK` defined where appropriate
+             - `.dockerignore` excludes `.env`, `.git`, `node_modules`, local credentials
+
+          2. **Secrets hygiene**
+             - No hardcoded credentials, API keys, tokens, or private keys anywhere in source
+             - `.env.example` / `.env.sample` contains only placeholder values (never real secrets)
+             - `.gitignore` excludes `.env`, `.env.local`, `*.pem`, `*.key`, credential files
+             - Git history is clean — no secrets leaked in past commits (spot-check a few)
+
+          3. **Known vulnerabilities (non-Dependabot)**
+             - Run `npm audit` / `pip-audit` / `bundler-audit` / `cargo audit` / `govulncheck` as applicable
+             - Flag **critical** or **high** advisories that Dependabot has NOT resolved (no fix available, requires manual mitigation, transitive dep pinning, etc.)
+             - Do NOT open PRs to bump versions — leave that to Dependabot
+
+          4. **CI / supply chain**
+             - GitHub Actions pinned to commit SHAs (not mutable tags like `@v4`)
+             - Each job has a minimal `permissions:` block (least privilege)
+             - No misuse of `pull_request_target` with checkout of PR code + secrets
+             - Third-party actions are from verified publishers
+
+          5. **Runtime security defaults**
+             - CORS is not wide-open (`*` origins) by default
+             - CSRF protection enabled where applicable
+             - Content Security Policy headers present for web frontends
+             - Debug / development modes disabled in production config (`DEBUG=False`, `NODE_ENV=production`, `app.run(debug=False)`, `config.consider_all_requests_local = false`, etc.)
+             - Default admin credentials are not shipped (force setup on first run)
+             - Session / cookie flags: `Secure`, `HttpOnly`, `SameSite` set appropriately
+
+          6. **Template-specific risks**
+             - Framework-specific defaults that expose risk (e.g. Next.js API routes leaking env, Django `ALLOWED_HOSTS = ['*']`, Flask `SECRET_KEY` hardcoded, Rails `secret_key_base` committed, exposed admin panels, default JWT secrets)
+             - Ports, endpoints, or management interfaces exposed that shouldn't be public
+
+          7. **Documentation**
+             - README clearly lists all security-sensitive env vars the operator MUST set before production (secret keys, DB credentials, admin passwords, JWT secrets)
+             - README warns about any defaults that are insecure for production
+
+          ## Deliverable
+
+          - **If issues are found**: open a PR with the fixes. Group related fixes into a single PR where possible; keep PRs focused and reviewable.
+          - **If the template is clean**: close this issue with a short comment summarizing what was audited and confirming no changes are needed. Do NOT open no-op PRs.
+
+          Out of scope: dependency version bumps (Dependabot), general code refactoring, adding features, README tone/style edits.
           EOF
           )"
