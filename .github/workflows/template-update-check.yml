@@ -26,7 +26,7 @@ jobs:
       - name: Create update check issue
         if: steps.check.outputs.exists == '0'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.COPILOT_PAT }}
         run: |
           gh issue create \
             --title "Weekly template update check" \
