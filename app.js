@@ -2,6 +2,24 @@ const express = require("express");
 const app = express();
 const port = process.env.PORT || 3001;
 
+app.disable("x-powered-by");
+
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'none'; " +
+    "script-src 'unsafe-inline' https://cdn.jsdelivr.net; " +
+    "style-src 'unsafe-inline' https://p.typekit.net; " +
+    "font-src https://use.typekit.net; " +
+    "img-src 'self'; " +
+    "connect-src 'none'"
+  );
+  next();
+});
+
 app.get("/", (req, res) => res.type('html').send(html));
 
 const server = app.listen(port, () => console.log(`Example app listening on port ${port}!`));
