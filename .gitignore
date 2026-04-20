@@ -1,2 +1,18 @@
 node_modules
 .DS_Store
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Private keys and certificates
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Credentials
+.npmrc
+.yarnrc

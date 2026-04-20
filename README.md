@@ -18,6 +18,18 @@ docker compose up
 
 See the project files for configuration details.
 
+## Security Notes
+
+> **Before deploying to production**, review the following:
+
+| Environment variable | Purpose | Production requirement |
+|---|---|---|
+| `PORT` | TCP port the server listens on (default `3001`) | Set to your desired port |
+| `NODE_ENV` | Runtime mode | **Must be `production`** (already set in `stackblaze.yaml` and `docker-compose.yml`) |
+
+- The server sets restrictive HTTP security headers (CSP, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`) and removes the `X-Powered-By` header on every response.
+- No secrets, credentials, or API keys are required by this template. If you extend it with a database or third-party service, store those credentials in environment variables and **never commit them** — `.gitignore` already excludes `.env` and common credential file types.
+
 ---
 
 ### Maintained by [StackBlaze](https://stackblaze.com)
